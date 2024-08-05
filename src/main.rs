@@ -1,7 +1,7 @@
 use components::core::Core;
 use macroquad::prelude::*;
 use states::Stage;
-use util::{config, language, logger};
+use util::{config::{self, write_config}, language, logger};
 
 mod components;
 mod states;
@@ -12,10 +12,18 @@ async fn main() {
   logger::init(true);
 
   let mut core = Core::new();
-  let config = config::read_config();
+  let mut config = config::read_config();
 
   log!("Core initialized");
-  log!("Loading language file: {}", core.language_file);
+
+  if config.language.is_empty() {
+    log!("Invalid language config, defaulting to English");
+    config.language = "en".to_string();
+
+    write_config(&config);
+  }
+
+  log!("Loading language file: {}", config.language);
 
   core.language_file = config.language.clone();
   
@@ -32,12 +40,31 @@ async fn main() {
   loop {
     clear_background(BLACK);
 
-    match core.current_state {
-      Stage::MainMenu => states::main_menu::draw(&core),
-      Stage::ShipSelect => states::ship_select::draw(&core),
-      Stage::Game => states::game::draw(&core),
+    log!("Current stage: {:?}", core.current_stage);
+
+    // Each state handles next_frame() itself
+    let result = match core.current_stage {
+      Stage::MainMenu => states::main_menu::draw(&mut core).await,
+      Stage::ShipSelect => states::ship_select::draw(&core).await,
+      Stage::Game => states::game::draw(&core).await,
+
+      Stage::Error => {
+        // We handle this elsewhere
+        Ok(())
+      },
+    };
+
+    if result.is_err() {
+      let err = result.err().unwrap();
+      log!("Error in main loop: {:?}", err);
+      core.errors.push(
+        format!("{:?}: {}", err.kind(), err.to_string())
+      );
+      core.current_stage = Stage::Error;
     }
 
-    next_frame().await
+    if core.current_stage == Stage::Error {
+      states::error::draw(&core).await.unwrap();
+    }
   }
 }

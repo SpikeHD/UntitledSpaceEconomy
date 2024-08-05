@@ -24,7 +24,7 @@ pub fn get_language_name(code: impl AsRef<str>) -> Result<String, std::io::Error
   Ok(data["LANGUAGE"].as_str().unwrap().to_string())
 }
 
-pub fn get_language_value(core: &Core, key: impl AsRef<str>) -> Result<String, std::io::Error> {
+pub fn get(core: &Core, key: impl AsRef<str>) -> Result<String, std::io::Error> {
   if let Some(data) = &core.language {
     let key = key.as_ref();
     
@@ -33,5 +33,5 @@ pub fn get_language_value(core: &Core, key: impl AsRef<str>) -> Result<String, s
     }
   }
   
-  Err(std::io::Error::new(std::io::ErrorKind::NotFound, "Key not found"))
+  Err(std::io::Error::new(std::io::ErrorKind::NotFound, "Language key not found"))
 }

@@ -3,6 +3,10 @@ name = "untitled_space_economy"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+lto = true
+strip = "debuginfo"
+
 [dependencies]
 chrono = "0.4.38"
 dirs = "5.0.1"
