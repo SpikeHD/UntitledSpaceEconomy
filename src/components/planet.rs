@@ -1,15 +1,22 @@
 use std::collections::HashMap;
 
+use rand::Rng;
+use serde::{Deserialize, Serialize};
+
+use crate::util::generators::{generate_name, NameGenerationParams};
+
 use super::{core::Core, item::Item};
 
+#[derive(Serialize, Deserialize)]
 pub struct Planet {
   pub name: String,
-  pub population: i32,
+  pub population: i64,
   pub poi: Vec<PointOfInterest>,
   pub x: i32,
   pub y: i32,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct PointOfInterest {
   pub name: String,
   pub description: String,
@@ -22,6 +29,25 @@ pub struct PointOfInterest {
 }
 
 impl Planet {
+  pub fn generate() -> Planet {
+    // Create 1-4 random POI
+    let poi = (1..=rand::random::<i32>() % 4)
+      .map(|_| PointOfInterest::generate())
+      .collect();
+
+    let mut rng = rand::thread_rng();
+    let x = rng.gen_range(0..100);
+    let y = rng.gen_range(0..100);
+
+    Planet {
+      name: generate_name(NameGenerationParams::default()),
+      population: rng.gen_range(100_000..10_000_000_000),
+      poi,
+      x,
+      y,
+    }
+  }
+
   pub fn avg_demand(&self) -> HashMap<i32, i32> {
     let mut avg_demand = HashMap::new();
     for poi in &self.poi {
@@ -53,6 +79,21 @@ impl Planet {
 }
 
 impl PointOfInterest {
+  pub fn generate() -> PointOfInterest {
+    let mut rng = rand::thread_rng();
+    let x = rng.gen_range(0..100);
+    let y = rng.gen_range(0..100);
+
+    PointOfInterest {
+      name: generate_name(NameGenerationParams::default()),
+      description: "A point of interest".to_string(),
+      inventory: HashMap::new(),
+      demand: HashMap::new(),
+      x,
+      y,
+    }
+  }
+
   pub fn calculate_price(&self, item: Item) -> i32 {
     let item_id = item.id;
     let demand = self.demand.get(&item_id).unwrap_or(&0);

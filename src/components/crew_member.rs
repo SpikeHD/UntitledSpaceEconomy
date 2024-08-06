@@ -1,3 +1,6 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub enum Job {
   Pilot,
   Mechanic,
@@ -7,6 +10,7 @@ pub enum Job {
   Misc
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct CrewMember {
   pub name: String,
   pub job: Job,

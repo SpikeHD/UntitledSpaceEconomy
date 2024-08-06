@@ -1,7 +1,7 @@
-use components::core::Core;
+use components::{core::Core, item::get_all_items};
 use macroquad::prelude::*;
 use states::Stage;
-use util::{config::{self, write_config}, language, logger};
+use util::{config::{self, write_config}, generators::{generate_name, NameGenerationParams}, language, logger};
 
 mod components;
 mod states;
@@ -36,6 +36,9 @@ async fn main() {
   }
 
   log!("Language file loaded: {}", core.language_file);
+
+  // DEBUG test reading all items
+  log!("{:?}", get_all_items());
 
   loop {
     clear_background(BLACK);

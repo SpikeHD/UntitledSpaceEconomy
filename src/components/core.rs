@@ -1,6 +1,6 @@
 use crate::states::Stage;
 
-use super::{item::Item, state::GameState};
+use super::{item::Item, progress::Progression, state::GameState};
 
 
 #[derive(Default)]
@@ -10,6 +10,7 @@ pub struct Core {
   pub version: String,
   pub errors: Vec<String>,
   pub state: Option<GameState>,
+  pub progress: Option<Progression>,
   pub items: Vec<Item>,
   pub current_stage: Stage,
 }

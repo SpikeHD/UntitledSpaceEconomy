@@ -2,6 +2,15 @@ use std::path::PathBuf;
 
 use dirs;
 
+pub fn is_not_installed() -> bool {
+  // Check if we have a "build" folder next to the executable
+  let current_exe = std::env::current_exe().unwrap();
+  let exe_folder = current_exe.parent().unwrap();
+  let build_folder = exe_folder.join("build");
+
+  build_folder.exists()
+}
+
 pub fn game_folder() -> PathBuf {
   // For Windows, this is Documents/My Games/[name]
   // For Linux, this is ~/.local/share/[name]
@@ -25,11 +34,21 @@ pub fn config_path() -> PathBuf {
 }
 
 pub fn lang_path() -> PathBuf {
-  let current_exe = std::env::current_exe().unwrap();
-  let exe_folder = current_exe.parent().unwrap();
-  exe_folder.join("lang")
+  let asset_folder = asset_path();
+  asset_folder.join("lang")
 }
 
 pub fn log_file_path() -> PathBuf {
   game_folder().join("log.txt")
+}
+
+pub fn asset_path() -> PathBuf {
+  if is_not_installed() {
+    let current_folder = std::env::current_dir().unwrap();
+    return current_folder.join("assets");
+  }
+
+  let current_exe = std::env::current_exe().unwrap();
+  let exe_folder = current_exe.parent().unwrap();
+  exe_folder.join("assets")
 }

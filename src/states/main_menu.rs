@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use macroquad::{prelude::*, ui::{hash, root_ui, widgets}};
 
-use crate::{components::core::Core, log, util::language};
+use crate::{components::{core::Core, player::Player, ship::{Ship, ShipSpecification}, state::GameState}, log, util::language};
 
 struct MenuItem {
   text: String,
@@ -49,7 +51,23 @@ pub async fn draw(core: &mut Core) -> Result<(), std::io::Error> {
       log!("Unimplemented")
     }),
     MenuItem::new(new_game, None, |core, br| {
-      core.current_stage = crate::states::Stage::ShipSelect;
+      // TODO send to ship select
+      core.state = Some(GameState::new(
+        "TEST_PLAYER".to_string(),
+        Ship {
+          spec: ShipSpecification {
+            name: "TEST_SHIP".to_string(),
+            max_crew: 10,
+            max_fuel: 100.,
+            max_inventory: 100,
+          },
+          crew: vec![],
+          inventory: HashMap::new(),
+          fuel: 100.,
+        }
+      ));
+
+      core.current_stage = crate::states::Stage::Game;
       *br = true;
     }),
     MenuItem::new(cont, None, |_, _| {}),
