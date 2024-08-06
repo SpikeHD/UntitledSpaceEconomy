@@ -14,7 +14,7 @@ pub struct GameState {
 impl GameState {
   pub fn new(name: String, ship: Ship) -> GameState {
     GameState {
-      planets: Vec::new(),
+      planets: (6..8).map(|_i| Planet::generate()).collect(),
       current_planet: 0,
       player: Player::new(name, ship),
       turn: 0,
