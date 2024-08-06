@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::util::generators::{generate_name, NameGenerationParams};
+use crate::{log, util::generators::{generate_name, NameGenerationParams}};
 
 use super::{core::Core, item::Item};
 
@@ -30,12 +30,15 @@ pub struct PointOfInterest {
 
 impl Planet {
   pub fn generate() -> Planet {
+    let mut rng = rand::thread_rng();
+
     // Create 1-4 random POI
-    let poi = (1..=rand::random::<i32>() % 4)
+    let poi: Vec<PointOfInterest> = (0..rng.gen_range(1..4))
       .map(|_| PointOfInterest::generate())
       .collect();
 
-    let mut rng = rand::thread_rng();
+    log!("Generated planet with {} POI", poi.len());
+
     let x = rng.gen_range(0..100);
     let y = rng.gen_range(0..100);
 

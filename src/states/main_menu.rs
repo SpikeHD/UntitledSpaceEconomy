@@ -67,7 +67,7 @@ pub async fn draw(core: &mut Core) -> Result<(), std::io::Error> {
         }
       ));
 
-      core.current_stage = crate::states::Stage::Game;
+      core.current_stage = crate::states::Stage::SystemView;
       *br = true;
     }),
     MenuItem::new(cont, None, |_, _| {}),

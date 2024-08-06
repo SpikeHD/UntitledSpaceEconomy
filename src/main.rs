@@ -48,8 +48,10 @@ async fn main() {
     // Each state handles next_frame() itself
     let result = match core.current_stage {
       Stage::MainMenu => states::main_menu::draw(&mut core).await,
-      Stage::ShipSelect => states::ship_select::draw(&core).await,
-      Stage::Game => states::game::draw(&core).await,
+      Stage::ShipSelect => states::ship_select::draw(&mut core).await,
+      Stage::SystemView => states::game::draw_system(&mut core).await,
+      Stage::PlanetView => states::game::draw_planet(&mut core).await,
+      Stage::POIView => states::game::draw_poi(&mut core).await,
 
       Stage::Error => {
         // We handle this elsewhere

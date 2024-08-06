@@ -3,7 +3,9 @@ pub enum Stage {
   #[default]
   MainMenu,
   ShipSelect,
-  Game,
+  SystemView,
+  PlanetView,
+  POIView,
 
   /// Special state, ideally should never happen
   Error
