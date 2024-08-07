@@ -1,5 +1,7 @@
 use rand::Rng;
 
+use super::random::{maybe, maybe_chance};
+
 static PHONETICS: &'static [&str] = &[
   "AE", "AI", "AU",
   "EA", "EE", "EI", "EU",
@@ -113,12 +115,4 @@ pub fn generate_name(params: NameGenerationParams) -> String {
   }
 
   name
-}
-
-pub fn maybe() -> bool {
-  rand::random::<i32>() % 2 == 0
-}
-
-pub fn maybe_chance(chance: i32) -> bool {
-  rand::random::<i32>() % chance == 0
 }

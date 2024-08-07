@@ -1,9 +1,9 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fs};
 
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::{log, util::generators::{generate_name, NameGenerationParams}};
+use crate::{log, util::{generators::{generate_name, NameGenerationParams}, path::asset_path, random::pick_x}};
 
 use super::{core::Core, item::Item};
 
@@ -26,6 +26,15 @@ pub struct PointOfInterest {
   pub demand: HashMap<i32, i32>,
   pub x: i32,
   pub y: i32,
+
+  pub types: Vec<POIType>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct POIType {
+  pub name: String,
+  pub categories: Vec<String>,
+  pub description: String,
 }
 
 impl Planet {
@@ -94,6 +103,10 @@ impl PointOfInterest {
       demand: HashMap::new(),
       x,
       y,
+      types: pick_x(get_all_poi_types().unwrap_or_else(|_| {
+        log!("Failed to get POI types");
+        Vec::new()
+      }), false, 2),
     }
   }
 
@@ -159,4 +172,27 @@ impl PointOfInterest {
 
     Ok(())
   }
+}
+
+pub fn get_all_poi_types() -> Result<Vec<POIType>, std::io::Error> {
+  let asset_path = asset_path();
+  let items = fs::read_to_string(asset_path.join("poi_types.dat"))?;
+
+  let items = items.lines()
+    .filter(|line| !line.starts_with('#'))
+    .map(|line| {
+      let mut parts = line.split_whitespace();
+      let name = parts.next().unwrap_or("UNKNOWN").to_string();
+      let description = parts.next().unwrap_or("UNKNOWN").to_string();
+      let categories = parts.map(|part| part.to_string()).collect();
+
+      POIType {
+        name,
+        description,
+        categories,
+      }
+    })
+    .collect();
+
+  Ok(items)
 }
