@@ -116,6 +116,8 @@ pub async fn draw_poi(core: &mut Core) -> Result<(), std::io::Error> {
     draw_text(format!("Money: {}", state.player.money).as_str(), 10.0, 20.0, 16.0, WHITE);
     draw_text(format!("Current planet: {}", state.current_planet).as_str(), 10.0, 30.0, 16.0, WHITE);
     draw_text(format!("POI: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].name).as_str(), 10.0, 40.0, 16.0, WHITE);
+    draw_text(format!("POI Main Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types[0].name).as_str(), 10.0, 50.0, 16.0, WHITE);
+    draw_text(format!("POI Sub Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types[1].name).as_str(), 10.0, 60.0, 16.0, WHITE);
 
     // Draw crude back button using button and < symbol
     let back_btn = widgets::Button::new("<")
