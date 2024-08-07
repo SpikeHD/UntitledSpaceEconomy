@@ -9,6 +9,7 @@ pub struct Item {
   pub id: i32,
   pub name: String,
   pub description: String,
+  pub category: String,
 
   /// Lowest price this item can be
   pub low_price: i32,
@@ -35,6 +36,7 @@ pub fn get_all_items() -> Result<Vec<Item>, std::io::Error> {
       let name = parts.next().unwrap_or("Unknown").to_string();
       let low_price = parts.next().unwrap_or("0").parse().unwrap();
       let high_price = parts.next().unwrap_or("0").parse().unwrap();
+      let category = parts.next().unwrap_or("UNKNOWN_CATEGORY").to_string();
       let illegal = parts.next().unwrap_or("false").to_lowercase().parse().unwrap();
       let description = parts.next().unwrap_or("UNKNOWN_ITEM").to_string();
 
@@ -44,6 +46,7 @@ pub fn get_all_items() -> Result<Vec<Item>, std::io::Error> {
         description,
         low_price,
         high_price,
+        category,
         illegal,
       }
     })
