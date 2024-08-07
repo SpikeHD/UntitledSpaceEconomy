@@ -36,9 +36,7 @@ async fn main() {
   }
 
   log!("Language file loaded: {}", core.language_file);
-
-  // DEBUG test reading all items
-  log!("{:?}", ITEMS());
+  log!("Read {} items", ITEMS.len());
 
   loop {
     clear_background(BLACK);

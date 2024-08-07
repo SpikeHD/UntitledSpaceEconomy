@@ -1,6 +1,7 @@
 use macroquad::{prelude::*, ui::{root_ui, widgets}};
+use serde::de;
 
-use crate::components::core::Core;
+use crate::components::{core::Core, item::ITEMS};
 
 pub async fn draw_system(core: &mut Core) -> Result<(), std::io::Error> {
   let state = core.state.as_mut().unwrap();
@@ -116,8 +117,8 @@ pub async fn draw_poi(core: &mut Core) -> Result<(), std::io::Error> {
     draw_text(format!("Money: {}", state.player.money).as_str(), 10.0, 20.0, 16.0, WHITE);
     draw_text(format!("Current planet: {}", state.current_planet).as_str(), 10.0, 30.0, 16.0, WHITE);
     draw_text(format!("POI: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].name).as_str(), 10.0, 40.0, 16.0, WHITE);
-    draw_text(format!("POI Main Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types[0].name).as_str(), 10.0, 50.0, 16.0, WHITE);
-    draw_text(format!("POI Sub Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types[1].name).as_str(), 10.0, 60.0, 16.0, WHITE);
+    draw_text(format!("POI Main Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types.0.name).as_str(), 10.0, 50.0, 16.0, WHITE);
+    draw_text(format!("POI Sub Type: {}", state.planets[state.current_planet as usize].poi[state.current_poi as usize].types.1.name).as_str(), 10.0, 60.0, 16.0, WHITE);
 
     // Draw crude back button using button and < symbol
     let back_btn = widgets::Button::new("<")
@@ -132,10 +133,15 @@ pub async fn draw_poi(core: &mut Core) -> Result<(), std::io::Error> {
 
     // Draw some text to the center of the screen showing the name of the POI and some debug info
     let poi = &state.planets[state.current_planet as usize].poi[state.current_poi as usize];
+    
+    // Draw all of the POIs inventory, as well as demand for that item
+    for (i, inv) in poi.inventory.iter().enumerate() {
+      // demand at index I should be the same item
+      let demand = poi.demand[inv.0];
+      let item = ITEMS.get(inv.0).unwrap();
 
-    draw_text(poi.name.as_str(), screen_width() / 2. - 50., screen_height() / 2. - 10., 20.0, WHITE);
-    draw_text(format!("Demand: {}", poi.demand.len()).as_str(), screen_width() / 2. - 50., screen_height() / 2., 16.0, WHITE);
-    draw_text(format!("Inventory: {}", poi.inventory.len()).as_str(), screen_width() / 2. - 50., screen_height() / 2. + 10., 16.0, WHITE);
+      draw_text(format!("{}: {} (Demand: {}%)", item.name, inv.1, demand).as_str(), 240.0, 70.0 + (i as f32 * 12.0), 16.0, WHITE);
+    }
 
     next_frame().await
   }

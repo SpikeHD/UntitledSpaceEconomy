@@ -13,7 +13,7 @@ pub static ITEMS: HashMap<u32, Item> = {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
-  pub id: i32,
+  pub id: u32,
   pub name: String,
   pub description: String,
   pub category: String,
