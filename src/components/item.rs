@@ -1,8 +1,15 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 use serde::{Deserialize, Serialize};
+use static_init::dynamic;
 
 use crate::util::path::asset_path;
+
+#[dynamic]
+pub static ITEMS: HashMap<u32, Item> = {
+  let items = get_all_items().unwrap();
+  items.into_iter().map(|item| (item.id as u32, item)).collect()
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -18,6 +25,10 @@ pub struct Item {
   pub high_price: i32,
 
   pub illegal: bool,
+}
+
+pub fn get_item_by_id(id: i32) -> Option<Item> {
+  ITEMS.get(&(id as u32)).cloned()
 }
 
 pub fn get_all_items() -> Result<Vec<Item>, std::io::Error> {

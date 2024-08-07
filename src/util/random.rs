@@ -6,7 +6,7 @@ pub fn maybe_chance(chance: i32) -> bool {
   rand::random::<i32>() % chance == 0
 }
 
-pub fn pick_one<T>(vec: &Vec<T>) -> T
+pub fn pick_one<T>(vec: Vec<T>) -> T
 where T: Clone
 {
   vec[rand::random::<usize>() % vec.len()].clone()

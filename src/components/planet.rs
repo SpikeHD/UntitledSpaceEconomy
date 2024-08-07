@@ -3,9 +3,16 @@ use std::{collections::HashMap, fs};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::{log, util::{generators::{generate_name, NameGenerationParams}, path::asset_path, random::pick_x}};
+use crate::{log, util::{generators::{generate_name, NameGenerationParams}, path::asset_path, random::{pick_one, pick_x}}};
 
-use super::{core::Core, item::Item};
+use super::{core::Core, item::{Item, ITEMS}};
+
+#[derive(Serialize, Deserialize, Clone)]
+pub enum SecurityLevel {
+  Low,
+  Medium,
+  High,
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct Planet {
@@ -14,6 +21,8 @@ pub struct Planet {
   pub poi: Vec<PointOfInterest>,
   pub x: i32,
   pub y: i32,
+
+  pub security: SecurityLevel,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -57,6 +66,7 @@ impl Planet {
       poi,
       x,
       y,
+      security: pick_one(vec![SecurityLevel::Low, SecurityLevel::Medium, SecurityLevel::High]),
     }
   }
 
